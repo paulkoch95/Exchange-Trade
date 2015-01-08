@@ -1,0 +1,7 @@
+name: Exchange Trade
+main: com.paulkoch95.exchangeTrade.exTrade
+version: 1.0
+
+commands:
+  trade:
+    description: Allows you to use the ExTrade Namespace and Commands!
