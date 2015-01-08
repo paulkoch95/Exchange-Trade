@@ -5,3 +5,7 @@ version: 1.0
 commands:
   trade:
     description: Allows you to use the ExTrade Namespace and Commands!
+    usage: Main command for alle ExchangeTrade Functions
+  trade setupStore:
+    description: Sets a Shop at Players Position!
+    usage: Simply type [/trade setupStore] to create a store at your current position. For further information view [/trade info]

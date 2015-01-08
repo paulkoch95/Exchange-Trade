@@ -23,8 +23,10 @@ public class ExTradeMain extends JavaPlugin{
 		getLogger().info("Exchange Trade erfolgreich geladen!");
 		loadPropData();
 		
+		
 	}
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		Player player = (Player) sender;//new instance of player is created
 		if(cmd.getName().equalsIgnoreCase("trade")){ //Using Trade Cmd
 			
 			if (sender instanceof Player){ //Checks wether the user is a player or the console
@@ -32,15 +34,19 @@ public class ExTradeMain extends JavaPlugin{
 				
 				if(args[0].equalsIgnoreCase("setupStore")){ //Checks the first Argument
 					
-					Player player = (Player) sender;//new instance of player is created
 					player.sendMessage("Store is now at position: "+ ChatColor.GREEN + "x: "+ getPlayerPositionString(sender) +ChatColor.RESET+ " created by "+ChatColor.RED + player.getName()+" Item: "+ getPlayerItemStack(sender));//Prints message where the Store is
 					
 				}else if (args[0].equalsIgnoreCase(null)){
+					
 					sender.sendMessage("Gives you access to the beauty of Exchange Trade!");
 				}
 				if(args[0].equalsIgnoreCase("debug")){
-					Player player = (Player) sender;
+					
 					player.sendMessage("Key Content quals: "+getKeyContent("player"));
+				}
+				if(args[0].equalsIgnoreCase("info")){
+					
+					player.sendMessage("Information about the plugin will be provided here, eventually.... SPACEHOLDER TIME!");
 				}
 			}else{
 				
@@ -76,6 +82,7 @@ public class ExTradeMain extends JavaPlugin{
 	//Properties loading//
 	//////////////////////
 	public static Properties prop = new Properties();
+	
 	public void loadPropData(){
 		try {
 			prop.load(new FileInputStream(System.getProperty("user.dir")+"/playerData.properties"));//load .properties Data by FIS
