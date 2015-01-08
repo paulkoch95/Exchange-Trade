@@ -1,5 +1,5 @@
 name: Exchange Trade
-main: com.paulkoch95.exchangeTrade.exTrade
+main: com.paulkoch95.exchangeTrade.ExTradeMain
 version: 1.0
 
 commands:

@@ -16,7 +16,7 @@ import java.io.IOException;
 
 
 
-public class exTrade extends JavaPlugin{
+public class ExTradeMain extends JavaPlugin{
 	
 	public int allowedItem = 3;
 	public void onEnable(){

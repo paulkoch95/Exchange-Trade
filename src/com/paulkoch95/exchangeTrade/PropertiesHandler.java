@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class PropertiesHandler extends exTrade{
+public class PropertiesHandler extends ExTradeMain{
 
 	public static Properties prop = new Properties();
 	
