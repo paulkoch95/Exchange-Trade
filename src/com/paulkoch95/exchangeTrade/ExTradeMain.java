@@ -13,10 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.UUID;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,7 +26,6 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 	
 	public int allowedItem = 3;
 	public String PATH_TO_PROPDATA = System.getProperty("user.dir")+"/plugins/ex_trade_dependencies/storeProperties.properties";
-	public String CURRENCY_NAME = "Gulden";
 	
 	public void onEnable(){
 		getServer().getPluginManager().registerEvents(this, this);
