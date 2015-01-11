@@ -30,7 +30,6 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 	public int allowedItem = 3;
 	public String PATH_TO_PROPDATA = System.getProperty("user.dir")+"/plugins/ex_trade_dependencies/storeProperties.properties";
 	public String CURRENCY_NAME = "Gulden";
-	private HashMap<UUID, Integer> money = new HashMap<>();
 	
 	public void onEnable(){
 		getServer().getPluginManager().registerEvents(this, this);
@@ -40,12 +39,13 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 		
 	}
 	public void onDisable(){
-		//savePropData();
-		for (Entry<UUID, Integer> entry : money.entrySet()) {
-			getConfig().set(entry.getKey() + "."+CURRENCY_NAME, entry.getValue());
-		}
+		savePropData();
 		saveConfig();
 	}
+	////////////
+	//Commands//
+	////////////
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		Player player = (Player) sender;//new instance of player is created
 		if(cmd.getName().equalsIgnoreCase("trade")){ //Using Trade Cmd
@@ -63,7 +63,7 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 				}
 				if(args[0].equalsIgnoreCase("debug")){
 					
-					player.sendMessage("Your Balance is: "+money.get(player.getUniqueId()));
+					player.sendMessage("Your Balance is: "+getConfig().getInt(player.getName()+".Gulden"));
 				}
 				if(args[0].equalsIgnoreCase("info")){
 					
@@ -100,45 +100,43 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 	//Event Handler//
 	/////////////////
 	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
+	public void onJoin(PlayerJoinEvent e){
 		Player p = e.getPlayer();
-		if (!getConfig().contains(p.getUniqueId().toString())) {
-			getConfig().set(p.getUniqueId() + "."+CURRENCY_NAME, 0);
-			money.put(p.getUniqueId(), 0);
-			getLogger().info("NEUER SPIELER!");
-		} else {
-			money.put(p.getUniqueId(), getConfig().getInt(p.getUniqueId() + "."+CURRENCY_NAME));
+		if(!getConfig().contains(p.getName())){
+			getConfig().set(p.getName()+".Gulden", 0);
 		}
 	}
-	
 	@EventHandler
-	public void onEntityDeath(EntityDeathEvent e) {
-		if (e.getEntity() instanceof Monster) {
-			if (e.getEntity().getKiller() instanceof Player) {
-				Player p = e.getEntity().getKiller();
-				//giveMoney(p, 200);
-				removeMoney(p,200);
-			}
-		} else if (e.getEntity() instanceof Villager) {
-			if (e.getEntity() instanceof Player) {
-				Player p = e.getEntity().getKiller();
-				removeMoney(p, 200);
+	public void onKill(EntityDeathEvent e){
+		if(e.getEntity() instanceof Monster){
+			Monster m = (Monster) e.getEntity();
+			if(m.getKiller() instanceof Player){
+				Player p = m.getKiller();
+				giveMoney(p,100);
 			}
 		}
+		
+		if(e.getEntity() instanceof Villager){
+			Villager v = (Villager) e.getEntity();
+			if(v.getKiller() instanceof Player){
+				Player p = v.getKiller();
+				removeMoney(p,100);
+			}
+		}
+			
 	}
 	
-	
-	
-	private void giveMoney(Player p, int amount) {
-		UUID uuid = p.getUniqueId();
-		money.put(uuid, money.get(uuid) + amount);
-		p.sendMessage("§2§l$" + amount + CURRENCY_NAME+" earned!");
+	public void giveMoney(Player p, int i){
+		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)+i);
+		saveConfig();
+		p.sendMessage("§2§l$"+i+" Gulden bekommen!");
 	}
-	private void removeMoney(Player p, int amount) {
-		UUID uuid = p.getUniqueId();
-		money.put(uuid, money.get(uuid) - amount);
-		p.sendMessage("§c§l$" + amount + CURRENCY_NAME+" lost!");
+	public void removeMoney(Player p, int i){
+		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)-i);
+		saveConfig();
+		p.sendMessage("§c§l$"+i+" Gulden verloren!");
 	}
+	
 	
 	//////////////////////
 	//Properties loading//
