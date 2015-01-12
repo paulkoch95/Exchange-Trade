@@ -1,6 +1,10 @@
 package com.paulkoch95.exchangeTrade;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Monster;
@@ -8,7 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,6 +115,7 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 			if(m.getKiller() instanceof Player){
 				Player p = m.getKiller();
 				giveMoney(p,100);
+				p.sendMessage("§2§l$100 Gulden bekommen! ("+m.toString()+")");
 			}
 		}
 		
@@ -117,20 +124,39 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 			if(v.getKiller() instanceof Player){
 				Player p = v.getKiller();
 				removeMoney(p,100);
+				p.sendMessage("§c§l$100 Gulden verloren!");
 			}
 		}
 			
 	}
 	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event){
+		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+			if(event.getClickedBlock().getType().equals(Material.SIGN_POST)){
+				Sign sign = (Sign) event.getClickedBlock().getState();
+				readBankSign(sign,event.getPlayer());
+				Player p = event.getPlayer();
+				p.sendMessage("Schild!!!!!!!");
+			}
+		}
+	}
+	
+	public void readBankSign(Sign sign,Player p){
+		if (sign.getLine(0).equalsIgnoreCase("serverbank")){
+				giveMoney(p,Integer.parseInt(sign.getLine(1).split(":")[1]));	
+				p.sendMessage(sign.getLine(1).split(":")[1]+" Gulden erhalten!");
+		}
+	}
 	public void giveMoney(Player p, int i){
 		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)+i);
 		saveConfig();
-		p.sendMessage("§2§l$"+i+" Gulden bekommen!");
+		//p.sendMessage("§2§l$"+i+" Gulden bekommen!");
 	}
 	public void removeMoney(Player p, int i){
 		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)-i);
 		saveConfig();
-		p.sendMessage("§c§l$"+i+" Gulden verloren!");
+		//p.sendMessage("§c§l$"+i+" Gulden verloren!");
 	}
 	
 	
