@@ -137,28 +137,43 @@ public class ExTradeMain extends JavaPlugin implements Listener{
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				readBankSign(sign,event.getPlayer());
 				Player p = event.getPlayer();
-				p.sendMessage("Schild!!!!!!!");
+				//p.sendMessage("Schild!!!!!!!");
 			}
 		}
 	}
 	
 	public void readBankSign(Sign sign,Player p){
+		
 		if (sign.getLine(0).equalsIgnoreCase("serverbank")){
-				giveMoney(p,Integer.parseInt(sign.getLine(1).split(":")[1]));	
-				p.sendMessage(sign.getLine(1).split(":")[1]+" Gulden erhalten!");
+				ItemStack bankItem = new ItemStack(Material.getMaterial(Integer.parseInt(sign.getLine(2))),3);
+				if (p.getInventory().getItemInHand().getTypeId() == bankItem.getTypeId()){
+					int finalAmount = Integer.parseInt(sign.getLine(1).split(":")[1])*p.getItemInHand().getAmount();
+					giveMoney(p,finalAmount);	
+					takePlayerItem(bankItem,p); //TODO:Fix ITem amount system, clearly not works a the moment....
+					p.sendMessage(finalAmount+" Gulden erhalten!");
+				}else{
+					p.sendMessage("Du scheinst leider Keine Diamanten in der Hand zu halten!");
+				}
+				
+				
 		}
 	}
+	
 	public void giveMoney(Player p, int i){
 		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)+i);
 		saveConfig();
 		//p.sendMessage("§2§l$"+i+" Gulden bekommen!");
 	}
+	
 	public void removeMoney(Player p, int i){
 		getConfig().set(p.getName()+".Gulden",getConfig().getInt(p.getName() + ".Gulden",0)-i);
 		saveConfig();
 		//p.sendMessage("§c§l$"+i+" Gulden verloren!");
 	}
 	
+	public void takePlayerItem(ItemStack item, Player p){
+		p.getInventory().remove(item);
+	}
 	
 	//////////////////////
 	//Properties loading//
